@@ -15,12 +15,10 @@ const Chat = () => {
 
     eventSource.onmessage = (event) => {
       const data: Message = JSON.parse(event.data);
-      console.log(event)
       setMessages((prevMessages) => [...prevMessages, data]);
     };
 
     eventSource.onerror = (error) => {
-      console.error('EventSource failed:', error);
       eventSource.close();
     };
 
