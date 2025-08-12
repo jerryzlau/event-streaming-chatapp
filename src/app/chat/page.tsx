@@ -19,7 +19,12 @@ const Chat = () => {
     };
 
     eventSource.onerror = (error) => {
+      console.error('EventSource failed:', error);
       eventSource.close();
+    };
+
+    eventSource.onopen = () => {
+      console.log('EventSource connected');
     };
 
     return () => {
