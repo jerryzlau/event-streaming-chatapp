@@ -7,11 +7,19 @@ type ProxyConfig = {
   headers?: Record<string, string>;
 };
 
-export const eventSourceProxy = (config: ProxyConfig) => {
-  return async () => {
+type ProxyMethod = 'GET' | 'POST';
+
+export const eventSourceProxy = (config: ProxyConfig, method: ProxyMethod) => {
+  return async (request: Request) => {
     try {
-      const response = await fetch(config.targetUrl, {
-        method: 'GET',
+      const target = new URL(config.targetUrl);
+      const incoming = new URL(request.url);
+      incoming.searchParams.forEach((value, key) => {
+        target.searchParams.append(key, value);
+      });
+
+      const response = await fetch(target.toString(), {
+        method,
         headers: {
           'Accept': 'text/event-stream',
           'Cache-Control': 'no-cache',
